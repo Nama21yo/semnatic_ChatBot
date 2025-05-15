@@ -128,7 +128,7 @@ Once both the backend and frontend are running:
 
 Open the Streamlit UI: Navigate to http://localhost:8501 (or the URL provided by Streamlit).
 
-[PLACEHOLDER FOR A SCREENSHOT OF THE MAIN STREAMLIT UI]
+![Image](https://github.com/user-attachments/assets/67fd8a63-f8a7-4e13-8852-a94df0332401)
 Description: The main interface showing the document upload sidebar, and the two main interaction blocks: "Semantic Search" and "Conversational QA (with Gemini)".
 
 Upload Documents:
@@ -155,13 +155,8 @@ Follow-up Questions: If you ask a follow-up question related to your previous se
 
 The interaction history for this block is displayed above the input field.
 
-[PLACEHOLDER FOR A SCREENSHOT OF THE SEMANTIC SEARCH BLOCK WITH RESULTS]
+![Image](https://github.com/user-attachments/assets/06e632ab-bf25-4276-ae6c-01a4b3e4d998)
 Description: Shows the semantic search input, a sample query, and the displayed top 3 results with expanders for chunk text.
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
 
 Conversational QA (Gemini) Block:
 
@@ -175,13 +170,9 @@ Follow-up Questions: This block is designed for multi-turn conversations. Gemini
 
 The conversation history for this block is displayed above its input field.
 
-[PLACEHOLDER FOR A SCREENSHOT OF THE CONVERSATIONAL QA BLOCK WITH A GEMINI RESPONSE]
+![Image](https://github.com/user-attachments/assets/e544d255-3adc-4c6c-ae12-a5c7a81ecb79)
 Description: Shows the Gemini QA input, a sample question, and a conversational answer from Gemini, potentially with source document snippets if implemented.
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
+
 
 Session Management (Sidebar):
 
