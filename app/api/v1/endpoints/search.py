@@ -1,36 +1,43 @@
-from fastapi import APIRouter, HTTPException, Body
-from app.api.v1.schemas import QueryRequest, SearchResponse # Add QA schemas if doing bonus
+from fastapi import APIRouter, HTTPException, Body, Depends
+from app.api.v1.schemas import QueryRequest, SearchResponse, QAQueryRequest, QAResponse, FeedbackRequest, FeedbackResponse
 from app.services.search_service import SearchService
-from app.core.config import settings
-import os
+# from app.core.vector_store import PineconeManager # Remove
+from app.core.vector_store import ChromaDBManager # Add
+from app.core.dependency import get_chromadb_manager # Update dependency import
+import logging
+import uuid
 
 router = APIRouter()
-search_service_instance = SearchService() # Instantiate the service
+logger = logging.getLogger(__name__)
 
-@router.post("/", response_model=SearchResponse)
-async def query_documents(request: QueryRequest = Body(...)):
-    # Check if knowledge base for session_id exists
-    session_kb_dir = os.path.join(settings.KB_DIR, request.session_id)
-    if not os.path.exists(session_kb_dir):
-        raise HTTPException(status_code=404, detail=f"Knowledge base for session '{request.session_id}' not found. Please upload documents first.")
-    
+# Dependency to get SearchService instance, now with FaissManager
+def get_search_service(chroma_manager: ChromaDBManager = Depends(get_chromadb_manager)) -> SearchService:
+    # The get_faiss_manager dependency already handles if faiss_manager_instance is None
+    return SearchService(chroma_manager)
+
+# Endpoints (@router.post("/"), @router.post("/qa"), @router.post("/feedback"))
+# remain largely the same in structure, as they depend on `get_search_service`
+# which now correctly instantiates `SearchService` with `FaissManager`.
+@router.post("/semantic_search", response_model=SearchResponse) # New endpoint name for clarity
+async def semantic_search_documents(
+    request: QueryRequest = Body(...), # QueryRequest has query, session_id, top_k
+    search_service: SearchService = Depends(get_search_service)
+):
     try:
-        response = search_service_instance.perform_search(request)
+        response = await search_service.perform_semantic_search(request)
         return response
     except Exception as e:
-        # Log the exception e
-        print(f"Search error: {e}")
-        raise HTTPException(status_code=500, detail="Error during search process.")
+        logger.error(f"Semantic Search service error for session {request.session_id}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error during semantic search: {str(e)}")
 
-# Bonus: QA Endpoint
-@router.post("/qa")
-async def question_answering(request: QueryRequest = Body(...)): # Reusing QueryRequest for simplicity
-    session_kb_dir = os.path.join(settings.KB_DIR, request.session_id)
-    if not os.path.exists(session_kb_dir):
-        raise HTTPException(status_code=404, detail=f"Knowledge base for session '{request.session_id}' not found.")
-
-    answer = search_service_instance.perform_qa(request.session_id, request.query)
-    if answer:
-        return {"question": request.query, "answer": answer, "session_id": request.session_id}
-    else:
-        return {"question": request.query, "answer": "Could not find an answer.", "session_id": request.session_id}
+@router.post("/conversational_qa", response_model=QAResponse) # New endpoint name
+async def conversational_question_answering(
+    request: QAQueryRequest = Body(...), # QAQueryRequest has question, session_id
+    search_service: SearchService = Depends(get_search_service)
+):
+    try:
+        response = await search_service.perform_conversational_qa(request)
+        return response
+    except Exception as e:
+        logger.error(f"Conversational QA service error for session {request.session_id}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error during conversational QA: {str(e)}")
