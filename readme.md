@@ -2,6 +2,8 @@
 
 This project implements a full-stack semantic search engine and a conversational question-answering (QA) system. Users can upload their documents, perform semantic searches to find relevant chunks, and engage in conversational QA powered by Google's Gemini Flash 2.0 LLM, all with an awareness of the ongoing conversation context.
 
+### Video DEMO LInk - https://www.awesomescreenshot.com/video/39855808?key=95db5f8c828a6aa91a409293fe0fce6c
+
 **Core Features:**
 
 *   **Document Upload:** Supports PDF, DOCX, and TXT file uploads.
