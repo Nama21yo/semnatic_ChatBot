@@ -1,0 +1,35 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings  # For config.py
+python-multipart   # For file uploads
+
+# Embeddings & NLP
+sentence-transformers
+spacy
+# Ensure you download the spaCy model: python -m spacy download en_core_web_sm
+
+# File Parsing
+pypdf2
+python-docx
+
+# Vector Database
+chromadb
+# Langchain & Dependencies
+langchain
+openai # If using OpenAI models via Langchain, or for tiktoken
+# tiktoken # Often used by Langchain for token counting
+
+# For QA (HuggingFace model, if not using OpenAI)
+# transformers[torch]
+# torch
+# accelerate # often good with transformers
+
+# For Visualization data handling
+numpy
+scikit-learn # for t-SNE in frontend, but backend might prepare data
+
+# For frontend (though typically run separately)
+# streamlit
+# plotly
+# matplotlib # if needed for static plots backend-side
